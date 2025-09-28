@@ -16,6 +16,11 @@
     <webopt:bundlereference runat="server" path="~/Content/css" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
+    <!-- Agrega esta línea: -->
+    <script src="<%= ResolveUrl("~/Scripts/jquery-3.7.1.min.js") %>"></script>
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+
+
 </head>
 <body>
     <form runat="server">
@@ -62,6 +67,9 @@
                 <p>&copy; <%: DateTime.Now.Year %> - Mi aplicación ASP.NET</p>
             </footer>
         </div>
+
+        <script src="<%= ResolveUrl("~/Scripts/jquery-3.7.1.min.js") %>"></script>
+
     </form>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/Scripts/bootstrap.js") %>
