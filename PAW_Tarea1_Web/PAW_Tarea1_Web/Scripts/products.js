@@ -25,46 +25,80 @@
         };
     }
 
+
+    (function () {
+        "use strict";
+
+        // Debounce sencillo para no disparar tantas llamadas
+        var tId = null;
+        function debounce(fn, ms) { return function () { clearTimeout(tId); var args = arguments; tId = setTimeout(function () { fn.apply(null, args); }, ms); }; }
+
+
+
     function limpiar() {
         $ul.empty();
         $no.text("");
     }
 
     function render(items) {
+        var $ul = $("#suggestions");
+        var $msg = $("#noResults");
         $ul.empty();
-        if (!items || !items.length) {
-            $no.text("No se encontraron productos");
+        if (!items || items.length === 0) {
+            $msg.text("No se encontraron productos");
             return;
         }
-        $no.text("");
-        items.forEach((n) => {
-            $("<li>")
-                .addClass("item")
-                .attr("role", "option")
-                .attr("tabindex", "-1")
-                .text(n)
-                .appendTo($ul);
+        $msg.text("");
+        items.forEach(function (n) {
+            $ul.append('<li class="item" tabindex="0">' + n + '</li>');
         });
     }
 
-    // --- llamada al WebMethod (AQUÍ se usa `term`)
     function buscar(term) {
-        if (!term || term.length < 2) { limpiar(); return; }
+        // Seguridad: checar que tengamos URL
+        var url = (window.SEARCH_URL && String(window.SEARCH_URL)) || "Pages/Products.aspx/Search";
 
         $.ajax({
-            url: searchUrl,                               // <- URL absoluta/resuelta
+            url: url,
             method: "POST",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({ term: term }),         // <- usar la variable recibida
+            data: JSON.stringify({ term: term }),
             dataType: "json"
         }).done(function (res) {
-            const items = (res && res.d) || [];
+            // PageMethods devuelven { d: [...] }
+            var items = (res && res.d) || [];
             render(items);
         }).fail(function (xhr) {
-            limpiar();
-            console.error("Error en búsqueda:", xhr.status, xhr.statusText, "URL:", searchUrl);
+            console.error("Search fail", xhr.status, xhr.statusText);
+            $("#noResults").text("Error: " + (xhr.status || "") + " " + (xhr.statusText || ""));
         });
     }
+
+        $(function () {
+            console.log("products.js cargado");
+
+            $("#q").on("keyup blur", debounce(function () {
+                var t = ($("#q").val() || "").trim();
+                if (t.length < 2) {
+                    $("#suggestions").empty();
+                    $("#noResults").text("");
+                    return;
+                }
+                buscar(t);
+            }, 200));
+
+            // Click en sugerencia
+            $("#suggestions").on("click keypress", ".item", function (e) {
+                if (e.type === "click" || (e.type === "keypress" && (e.key === "Enter" || e.keyCode === 13))) {
+                    $("#q").val($(this).text());
+                    // Aquí puedes redirigir a detalle si quieres:
+                    // window.location.href = "Products.aspx?search=" + encodeURIComponent($(this).text());
+                }
+            });
+        });
+    })();
+
+
 
     // --- eventos
     $q.on("keyup", debounce(function () {
