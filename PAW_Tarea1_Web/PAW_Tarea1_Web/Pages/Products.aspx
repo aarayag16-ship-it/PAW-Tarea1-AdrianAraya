@@ -1,16 +1,22 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Products.aspx.cs" Inherits="PAW_Tarea1_Web.Pages.Products" %>
+﻿<%@ Page Title="Productos" Language="C#" MasterPageFile="~/Site.Master"
+    AutoEventWireup="true" CodeBehind="Products.aspx.cs"
+    Inherits="PAW_Tarea1_Web.Pages.Products" %>
 
-<!DOCTYPE html>
+<asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
+  <link href="<%= ResolveUrl("~/Styles/site.css") %>" rel="stylesheet" />
+    
+    <script>
+      window.SEARCH_URL = '<%= ResolveUrl("~/Pages/Products.aspx/Search") %>';
+  </script>
+    <script src="<%= ResolveUrl("~/Scripts/products.js") %>"></script>
+</asp:Content>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
-</head>
-<body>
-    <form id="form1" runat="server">
-        <div>
-        </div>
-    </form>
-</body>
-</html>
+<asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
+  <h2>Búsqueda de productos</h2>
+  <div id="productSearch" role="search">
+    <input id="q" type="text" placeholder="Busca un producto..." autocomplete="off" />
+    <ul id="suggestions" class="dropdown"></ul>
+    <div id="noResults" class="muted" aria-live="polite"></div>
+  </div>
+</asp:Content>
+

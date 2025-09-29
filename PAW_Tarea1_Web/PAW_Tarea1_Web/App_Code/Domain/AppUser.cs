@@ -6,7 +6,7 @@ using System.Web;
 namespace PAW_Tarea1_Web.App_Code.Domain
 {
     [Serializable]
-    public class User
+    public class AppUser
     {
         public string FullName { get; set; }      // Nombre completo
         public string Email { get; set; }         // Correo (único)

@@ -13,7 +13,7 @@ namespace PAW_Tarea1_Web.App_Code.Data
     public static class InMemoryStore
     {
         // Usuarios registrados en la app
-        public static readonly List<User> Users = new List<User>();
+        public static readonly List<AppUser> Users = new List<AppUser>();
 
         // Catálogo simple de productos para la búsqueda
         public static readonly List<Product> Products;
